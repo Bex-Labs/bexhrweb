@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Tax Readiness Assessment — bexHR</title>
+<meta name="description" content="A 2-minute self-assessment to check whether your company is ready for Nigeria's 2026 tax reforms.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --ink:#10131A; --ink-soft:#1A1E27; --paper:#FBF9F3; --paper-dim:#F3F0E7;
+    --gold:#B8862E; --gold-bright:#D9A94D; --gold-pale:#F3E6C4;
+    --slate:#5B6472; --slate-light:#8A93A2; --line:#E6E0D2; --line-dark:#2A2F3A;
+    --green:#1E8E5A; --red:#C0503C; --amber:#C9962B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'IBM Plex Sans', sans-serif; background:var(--paper); color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; line-height:1.15;}
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+
+  .nav{border-bottom:1px solid var(--line); padding:20px 0;}
+  .nav .wrap{display:flex; align-items:center; justify-content:space-between;}
+  .logo{display:flex; align-items:center; gap:10px; font-weight:700; font-size:18px;}
+  .logo-mark{
+    width:28px; height:28px; border-radius:7px;
+    background:linear-gradient(135deg, var(--gold-bright), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    color:#1A1204; font-family:'IBM Plex Mono'; font-weight:700; font-size:12px;
+  }
+  .nav a.back{font-size:13.5px; color:var(--slate); font-weight:500;}
+
+  main{padding:56px 0 100px;}
+
+  /* Intro */
+  .intro{text-align:center; padding-bottom:40px;}
+  .intro .kicker{
+    font-family:'IBM Plex Mono'; font-size:12px; color:var(--gold); letter-spacing:.05em;
+    text-transform:uppercase; font-weight:600; margin-bottom:14px; display:block;
+  }
+  .intro h1{font-size:32px;}
+  .intro p{color:var(--slate); margin:14px auto 0; max-width:520px; font-size:15.5px;}
+  .intro-meta{
+    display:flex; gap:22px; justify-content:center; margin-top:22px;
+    font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--slate-light);
+  }
+  .intro-meta span::before{content:'· '; color:var(--gold);}
+  .intro-meta span:first-child::before{content:'';}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:9px;
+    font-size:15px; font-weight:600; border:1px solid transparent; cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-gold{background:var(--gold); color:#1A1204;}
+  .btn-gold:hover{background:var(--gold-bright);}
+  .btn-outline{background:transparent; border-color:var(--line); color:var(--ink);}
+  .btn-outline:hover{border-color:var(--ink);}
+  .btn:disabled{opacity:.45; cursor:not-allowed; transform:none;}
+
+  /* Progress */
+  .progress-wrap{margin-bottom:36px;}
+  .progress-labels{display:flex; justify-content:space-between; font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--slate); margin-bottom:8px;}
+  .progress-track{height:6px; background:var(--line); border-radius:100px; overflow:hidden;}
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--gold), var(--gold-bright)); border-radius:100px; transition:width .35s ease;}
+
+  /* Question card */
+  .qcard{background:#fff; border:1px solid var(--line); border-radius:16px; padding:36px; display:none;}
+  .qcard.active{display:block;}
+  .qcat{font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--gold); letter-spacing:.04em; text-transform:uppercase; margin-bottom:10px;}
+  .qtext{font-size:19px; font-weight:600; font-family:'IBM Plex Sans'; margin-bottom:22px; line-height:1.4;}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{
+    display:flex; align-items:center; gap:12px; padding:14px 16px;
+    border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .option:hover{border-color:var(--gold-bright);}
+  .option.selected{border-color:var(--gold); background:var(--gold-pale);}
+  .option input{accent-color:var(--gold); width:16px; height:16px; flex-shrink:0;}
+  .option span{font-size:14.5px;}
+
+  .qnav{display:flex; justify-content:space-between; margin-top:28px;}
+
+  /* Results */
+  #results{display:none;}
+  .tier-card{
+    background:var(--ink); color:#fff; border-radius:18px; padding:40px; text-align:center; margin-bottom:32px;
+  }
+  .tier-card .kicker{font-family:'IBM Plex Mono'; font-size:12px; color:var(--gold-bright); letter-spacing:.05em; text-transform:uppercase;}
+  .tier-card h2{font-size:30px; margin:10px 0 8px; color:#fff;}
+  .tier-card .score{font-family:'IBM Plex Mono'; font-size:14px; color:#B7BEC9;}
+  .tier-card p.desc{color:#C7CDD6; max-width:440px; margin:16px auto 0; font-size:14.5px;}
+
+  .catbar-row{margin-bottom:16px;}
+  .catbar-head{display:flex; justify-content:space-between; font-size:13.5px; margin-bottom:6px;}
+  .catbar-head .name{font-weight:600;}
+  .catbar-head .score{font-family:'IBM Plex Mono'; color:var(--slate);}
+  .catbar-track{height:8px; background:var(--line); border-radius:100px; overflow:hidden;}
+  .catbar-fill{height:100%; border-radius:100px;}
+
+  .results-cta{
+    margin-top:36px; background:var(--paper-dim); border-radius:16px; padding:32px; text-align:center;
+  }
+  .results-cta h3{font-size:20px; margin-bottom:10px;}
+  .results-cta p{color:var(--slate); font-size:14.5px; margin-bottom:20px;}
+  .results-ctas{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+
+  /* Email gate */
+  #gate{display:none; text-align:center;}
+  #gate .qcard{max-width:440px; margin:0 auto; text-align:left;}
+  #gate h2{font-size:22px; margin-bottom:10px;}
+  #gate p{color:var(--slate); font-size:14px; margin-bottom:20px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:13px; font-weight:600; margin-bottom:6px;}
+  .field input{
+    width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:9px;
+    font-family:'IBM Plex Sans'; font-size:14.5px;
+  }
+  .field input:focus{outline:2px solid var(--gold-bright); outline-offset:1px; border-color:var(--gold);}
+  .disclaimer{font-size:11.5px; color:var(--slate-light); margin-top:16px; text-align:center;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="logo"><span class="logo-mark">HR</span> bexHR</div>
+    <a href="index.html" class="back">← Back to bexHR.com</a>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+
+    <!-- Intro -->
+    <div id="intro" class="intro">
+      <span class="kicker">2026 Tax Readiness</span>
+      <h1>Is your company ready for Nigeria's 2026 tax changes?</h1>
+      <p>Answer 15 quick questions across 6 areas — PAYE, tax identity, deductions, corporate tax, vendor compliance, and systems readiness — to see exactly where the gaps are.</p>
+      <div class="intro-meta">
+        <span>15 questions</span>
+        <span>6 categories</span>
+        <span>~2 minutes</span>
+      </div>
+      <div style="margin-top:30px;">
+        <button class="btn btn-gold" onclick="startQuiz()">Start Assessment →</button>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div id="quiz" style="display:none;">
+      <div class="progress-wrap">
+        <div class="progress-labels">
+          <span id="progressLabel" class="mono">Question 1 of 24</span>
+          <span id="progressCat" class="mono">PAYE &amp; Payroll Configuration</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:4%"></div></div>
+      </div>
+      <div id="qcontainer"></div>
+      <div class="qnav">
+        <button class="btn btn-outline" id="backBtn" onclick="prevQ()">Back</button>
+        <button class="btn btn-gold" id="nextBtn" onclick="nextQ()" disabled>Next</button>
+      </div>
+    </div>
+
+    <!-- Email gate -->
+    <div id="gate">
+      <div class="qcard active">
+        <h2>See your results</h2>
+        <p>Enter your email to see your readiness tier and a category-by-category breakdown of where the gaps are.</p>
+        <form id="gateForm" onsubmit="submitGate(event)">
+          <div class="field">
+            <label for="email">Work email *</label>
+            <input type="email" id="email" required placeholder="you@company.com">
+          </div>
+          <div class="field">
+            <label for="company">Company name</label>
+            <input type="text" id="company" placeholder="Your company">
+          </div>
+          <button type="submit" class="btn btn-gold" style="width:100%; justify-content:center;">See My Results →</button>
+        </form>
+      </div>
+      <p class="disclaimer">This assessment is for informational purposes only and does not constitute tax or legal advice.</p>
+    </div>
+
+    <!-- Results -->
+    <div id="results">
+      <div class="tier-card">
+        <span class="kicker">Your Result</span>
+        <h2 id="tierName">—</h2>
+        <div class="score mono" id="tierScore">Score: — / 48</div>
+        <p class="desc" id="tierDesc"></p>
+      </div>
+
+      <div id="catbars"></div>
+
+      <div class="results-cta">
+        <h3>Get the full breakdown</h3>
+        <p>The free Employer's Guide to the 2026 Nigerian Tax Reforms covers every change in this assessment, plus a 90-day compliance checklist.</p>
+        <div class="results-ctas">
+          <a href="#" class="btn btn-gold">Download the Employer's Guide</a>
+          <a href="index.html#demo" class="btn btn-outline">Book a bexHR Demo</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+/* ---------------------------------------------
+   Question bank — 6 categories x 4 questions
+--------------------------------------------- */
+const CATEGORIES = [
+  "PAYE & Payroll Configuration",
+  "Employee Tax Identity (TIN/NIN)",
+  "Statutory Deductions & Remittances",
+  "Corporate Tax Position",
+  "Vendor & Contractor Compliance",
+  "Systems & Documentation Readiness"
+];
+
+const QUESTIONS = [
+  // Category 1 — PAYE & Payroll Configuration (3)
+  {cat:0, q:"Has your payroll system been updated to apply the new 2026 PAYE tax bands (0% up to ₦800,000, six progressive brackets above that)?",
+   opts:[["Yes, fully updated and tested",2],["In progress",1],["No / not sure",0]]},
+  {cat:0, q:"Have you replaced the old Consolidated Relief Allowance (CRA) with the new Rent Relief Allowance (20% of gross annual income, capped at ₦500,000)?",
+   opts:[["Yes",2],["Partially (aware but not implemented)",1],["No / didn't know this changed",0]]},
+  {cat:0, q:"Are employees earning ₦800,000 or less annually currently being taxed ₦0 in your system?",
+   opts:[["Yes, confirmed",2],["Not sure / haven't checked",1],["No, still being taxed",0]]},
+
+  // Category 2 — Employee Tax Identity (TIN/NIN) (2)
+  {cat:1, q:"Does every employee on payroll have a valid, verified TIN linked to their NIN?",
+   opts:[["Yes, 100%",2],["Partial coverage",1],["No / haven't checked",0]]},
+  {cat:1, q:"Do you have a process to validate new hires' TIN/NIN before their first payroll run?",
+   opts:[["Yes, built into onboarding",2],["Informal / ad hoc",1],["No process",0]]},
+
+  // Category 3 — Statutory Deductions & Remittances (3)
+  {cat:2, q:"Are pension, NHF (2.5% of gross), and NHIS deductions correctly configured under the new rules?",
+   opts:[["Yes",2],["Some updated, some not",1],["No",0]]},
+  {cat:2, q:"Do you have a documented process for employees to declare and support rent relief claims?",
+   opts:[["Yes, formal process in place",2],["Informal / verbal only",1],["No",0]]},
+  {cat:2, q:"Are statutory remittances filed and paid on time every month, with records kept for audit?",
+   opts:[["Yes, consistently",2],["Mostly, with occasional delays",1],["No reliable process",0]]},
+
+  // Category 4 — Corporate Tax Position (2)
+  {cat:3, q:"Do you know whether your company qualifies for the 0% CIT small-company exemption (turnover ≤ ₦100m, fixed assets ≤ ₦250m)?",
+   opts:[["Yes, confirmed status",2],["Think so, not confirmed",1],["Don't know",0]]},
+  {cat:3, q:"Have you accounted for the new consolidated Development Levy in your tax planning?",
+   opts:[["Yes",2],["Partially",1],["No / unaware",0]]},
+
+  // Category 5 — Vendor & Contractor Compliance (3)
+  {cat:4, q:"Do you verify that all contractors/vendors are properly tax-registered before onboarding them?",
+   opts:[["Yes, standard practice",2],["Sometimes",1],["No",0]]},
+  {cat:4, q:"Are you aware of the penalty (up to ₦5 million) for engaging unregistered contractors?",
+   opts:[["Yes, and we've audited our vendor list",2],["Aware, haven't audited",1],["Not aware",0]]},
+  {cat:4, q:"Do you maintain documentation proving vendor tax compliance status (not just invoices)?",
+   opts:[["Yes",2],["Some vendors only",1],["No",0]]},
+
+  // Category 6 — Systems & Documentation Readiness (2)
+  {cat:5, q:"Do you have a compliance calendar tracking return types, due dates, and filing status?",
+   opts:[["Yes",2],["Informal tracking",1],["No",0]]},
+  {cat:5, q:"If audited today, could you produce 12 months of payroll, tax, and remittance records within 48 hours?",
+   opts:[["Yes",2],["With difficulty",1],["No",0]]},
+];
+
+// Number of questions per category, used to compute per-category max scores
+const CATEGORY_COUNTS = CATEGORIES.map((_, i) => QUESTIONS.filter(q => q.cat === i).length);
+const MAX_SCORE = QUESTIONS.length * 2; // 30
+
+const TIERS = [
+  {min:24, max:30, name:"Tier 1 — Ready", desc:"Your compliance foundation is strong. Focus on fine-tuning and audit-proofing.", color:"#1E8E5A"},
+  {min:16, max:23, name:"Tier 2 — Partially Ready", desc:"You've made progress, but gaps remain that could trigger penalties.", color:"#C9962B"},
+  {min:8,  max:15, name:"Tier 3 — At Risk", desc:"Significant exposure. Immediate action needed before your next payroll run.", color:"#C0503C"},
+  {min:0,  max:7,  name:"Tier 4 — Not Ready", desc:"Your organization is largely unprepared for the 2026 tax reforms. Urgent remediation required.", color:"#8B2E20"},
+];
+
+/* ---------------------------------------------
+   Supabase config — fill these in to enable lead capture.
+   Leave as-is to run the assessment without a backend.
+--------------------------------------------- */
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+let supabaseClient = null;
+try{
+  if(SUPABASE_URL.startsWith("http") && SUPABASE_ANON_KEY.length > 20){
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+}catch(e){ console.warn("Supabase not configured:", e); }
+
+/* ---------------------------------------------
+   Quiz state & logic
+--------------------------------------------- */
+let current = 0;
+const answers = new Array(QUESTIONS.length).fill(null);
+
+function startQuiz(){
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const qc = document.getElementById('qcontainer');
+  qc.innerHTML = '';
+  const q = QUESTIONS[current];
+
+  const card = document.createElement('div');
+  card.className = 'qcard active';
+  card.innerHTML = `
+    <div class="qcat">${CATEGORIES[q.cat]}</div>
+    <div class="qtext">${q.q}</div>
+    <div class="options">
+      ${q.opts.map((o,i)=>`
+        <label class="option ${answers[current]===i?'selected':''}" data-idx="${i}">
+          <input type="radio" name="opt" ${answers[current]===i?'checked':''}>
+          <span>${o[0]}</span>
+        </label>
+      `).join('')}
+    </div>
+  `;
+  qc.appendChild(card);
+
+  card.querySelectorAll('.option').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      const idx = parseInt(opt.dataset.idx);
+      answers[current] = idx;
+      card.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      opt.querySelector('input').checked = true;
+      document.getElementById('nextBtn').disabled = false;
+    });
+  });
+
+  document.getElementById('progressLabel').textContent = `Question ${current+1} of ${QUESTIONS.length}`;
+  document.getElementById('progressCat').textContent = CATEGORIES[q.cat];
+  document.getElementById('progressFill').style.width = `${((current+1)/QUESTIONS.length)*100}%`;
+  document.getElementById('backBtn').disabled = current === 0;
+  document.getElementById('nextBtn').disabled = answers[current] === null;
+  document.getElementById('nextBtn').textContent = current === QUESTIONS.length - 1 ? 'See Results →' : 'Next';
+}
+
+function nextQ(){
+  if(answers[current] === null) return;
+  if(current === QUESTIONS.length - 1){
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('gate').style.display = 'block';
+    return;
+  }
+  current++;
+  renderQuestion();
+}
+
+function prevQ(){
+  if(current === 0) return;
+  current--;
+  renderQuestion();
+}
+
+function computeScores(){
+  const catScores = new Array(CATEGORIES.length).fill(0);
+  let total = 0;
+  QUESTIONS.forEach((q, i)=>{
+    const points = answers[i] !== null ? q.opts[answers[i]][1] : 0;
+    catScores[q.cat] += points;
+    total += points;
+  });
+  return {catScores, total};
+}
+
+function getTier(total){
+  return TIERS.find(t => total >= t.min && total <= t.max) || TIERS[TIERS.length-1];
+}
+
+async function submitGate(e){
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const company = document.getElementById('company').value;
+  const {catScores, total} = computeScores();
+  const tier = getTier(total);
+
+  if(supabaseClient){
+    try{
+      await supabaseClient.from('assessment_leads').insert({
+        email, company_name: company, total_score: total,
+        tier: tier.name, category_scores: catScores, answers: answers
+      });
+    }catch(err){ console.warn("Supabase insert failed:", err); }
+  }
+
+  showResults(catScores, total, tier);
+}
+
+function showResults(catScores, total, tier){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+
+  document.getElementById('tierName').textContent = tier.name;
+  document.getElementById('tierScore').textContent = `Score: ${total} / ${MAX_SCORE}`;
+  document.getElementById('tierDesc').textContent = tier.desc;
+  document.querySelector('.tier-card').style.background = `linear-gradient(135deg, #10131A, ${tier.color}22)`;
+
+  const catbars = document.getElementById('catbars');
+  catbars.innerHTML = CATEGORIES.map((name, i)=>{
+    const score = catScores[i];
+    const catMax = CATEGORY_COUNTS[i] * 2;
+    const pct = (score/catMax)*100;
+    const color = pct >= 75 ? '#1E8E5A' : pct >= 50 ? '#C9962B' : '#C0503C';
+    return `
+      <div class="catbar-row">
+        <div class="catbar-head">
+          <span class="name">${name}</span>
+          <span class="score mono">${score} / ${catMax}</span>
+        </div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:${pct}%; background:${color}"></div></div>
+      </div>
+    `;
+  }).join('');
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>

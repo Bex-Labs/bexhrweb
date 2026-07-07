@@ -1,200 +1,452 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="BexHR helps growing teams manage payroll, leave, approvals, and HR compliance from one secure platform."
-    />
-    <title>BexHR | Secure HR & Payroll Platform</title>
-    <link rel="icon" href="public/favicon.svg" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <nav class="nav">
-        <a class="brand" href="#top">BexHR</a>
-        <div class="nav-links" aria-label="Primary navigation">
-          <a class="active" href="#product">Product</a>
-          <a href="#features">About</a>
-          <a href="#pricing">Pricing</a>
-        </div>
-        <a class="button button-dark" href="https://app.bexhr.com">Book a Demo</a>
-      </nav>
-    </header>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bexHR — The Secure HR & Payroll Platform for Growth</title>
+<meta name="description" content="Manage people, salary, statutory deductions, and payslips in one role-secured system. Built for Nigerian payroll compliance, audit-ready for 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10131A;
+    --ink-soft:#1A1E27;
+    --paper:#FBF9F3;
+    --paper-dim:#F3F0E7;
+    --gold:#B8862E;
+    --gold-bright:#D9A94D;
+    --gold-pale:#F3E6C4;
+    --slate:#5B6472;
+    --slate-light:#8A93A2;
+    --line:#E6E0D2;
+    --line-dark:#2A2F3A;
+    --green:#1E8E5A;
+    --radius:14px;
+    --max:1180px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'IBM Plex Sans', sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    line-height:1.12;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 32px;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
 
-    <main id="top">
-      <section class="hero" id="product">
-        <div class="container hero-grid">
-          <div>
-            <p class="eyebrow"><span></span> Audit-ready for 2026</p>
-            <h1>
-              The Secure HR & Payroll
-              <strong>Platform for Growth.</strong>
-            </h1>
-            <p class="hero-copy">
-              Manage people, leave, payroll, and approvals through a secure
-              role-based HR experience built for precision, compliance, and
-              growing Nigerian teams.
-            </p>
-            <div class="button-row">
-              <a class="button button-gold" href="https://app.bexhr.com">Book a Demo</a>
-              <a class="button button-light" href="#features">View Features -&gt;</a>
-            </div>
-          </div>
+  /* Buttons */
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 24px;
+    border-radius:9px;
+    font-size:15px;
+    font-weight:600;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-gold{background:var(--gold); color:#1A1204; box-shadow:0 1px 0 rgba(0,0,0,.08);}
+  .btn-gold:hover{background:var(--gold-bright);}
+  .btn-outline-ink{background:transparent; color:var(--ink); border-color:var(--line);}
+  .btn-outline-ink:hover{border-color:var(--ink);}
+  .btn-outline-light{background:transparent; color:#fff; border-color:rgba(255,255,255,.25);}
+  .btn-outline-light:hover{border-color:#fff;}
+  .btn-dark{background:var(--ink); color:#fff;}
+  .btn-dark:hover{background:var(--ink-soft);}
 
-          <div class="hero-visual">
-            <div class="window-dots" aria-hidden="true"><span></span></div>
-            <img
-              src="public/bexhr-dashboard-hero.png"
-              alt="BexHR dashboard shown on a laptop in a modern workspace"
-            />
-          </div>
-        </div>
-      </section>
+  /* Nav */
+  .nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(251,249,243,.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:76px;
+  }
+  .logo{display:flex; align-items:center; gap:10px; font-weight:700; font-size:19px;}
+  .logo-mark{
+    width:30px; height:30px; border-radius:8px;
+    background:linear-gradient(135deg, var(--gold-bright), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    color:#1A1204; font-family:'IBM Plex Mono'; font-weight:700; font-size:13px;
+  }
+  .nav-links{display:flex; align-items:center; gap:36px;}
+  .nav-links a{font-size:14.5px; color:var(--slate); font-weight:500;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a.active{color:var(--gold); }
+  .nav-cta{display:flex; align-items:center; gap:14px;}
+  .nav-cta .btn{padding:10px 20px; font-size:14px;}
 
-      <section class="assessment">
-        <div class="container assessment-card">
-          <div>
-            <h2>Is Your Company Ready for Nigeria's 2026 Tax Changes?</h2>
-            <p>
-              Regulations are shifting. Check whether your payroll setup,
-              approvals, employee records, and reports are ready before the next
-              compliance cycle.
-            </p>
-          </div>
-          <a class="button button-teal" href="mailto:sales@bexhr.com">Start Assessment</a>
-        </div>
-      </section>
+  /* Hero */
+  .hero{padding:88px 0 64px;}
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr .95fr; gap:64px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--gold-pale); color:#7A5A17;
+    font-family:'IBM Plex Mono'; font-size:12px; font-weight:600;
+    letter-spacing:.04em; text-transform:uppercase;
+    padding:6px 12px; border-radius:100px; margin-bottom:22px;
+  }
+  .eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--green);}
+  .hero h1{font-size:52px; max-width:560px;}
+  .hero h1 .accent{color:var(--gold);}
+  .hero p.lead{font-size:17px; color:var(--slate); max-width:480px; margin:22px 0 32px;}
+  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
 
-      <section class="features" id="features">
-        <div class="container">
-          <div class="section-heading">
-            <h2>Engineered for Precision</h2>
-            <p>
-              The tools HR and finance teams need to manage sensitive operations
-              without spreadsheets, guesswork, or scattered requests.
-            </p>
-          </div>
+  /* Ledger signature widget */
+  .ledger-card{
+    background:var(--ink); border-radius:20px; padding:28px;
+    box-shadow:0 30px 60px -20px rgba(16,19,26,.35);
+    position:relative; overflow:hidden;
+  }
+  .ledger-card::before{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(600px 200px at 100% 0%, rgba(217,169,77,.14), transparent 60%);
+    pointer-events:none;
+  }
+  .ledger-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+  .ledger-title{color:#fff; font-size:13px; font-weight:600; letter-spacing:.02em;}
+  .ledger-badge{
+    font-family:'IBM Plex Mono'; font-size:10.5px; color:var(--gold-bright);
+    background:rgba(217,169,77,.12); border:1px solid rgba(217,169,77,.3);
+    padding:4px 9px; border-radius:100px;
+  }
+  .ledger-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:13px 4px; border-bottom:1px solid var(--line-dark);
+    font-family:'IBM Plex Mono'; font-size:13px;
+    opacity:0; transform:translateY(6px);
+    animation:rowIn .5s ease forwards;
+  }
+  .ledger-row:last-of-type{border-bottom:none;}
+  .ledger-row .label{color:#B7BEC9;}
+  .ledger-row .val{color:#fff; font-weight:500;}
+  .ledger-row .val.neg{color:#E39A9A;}
+  .ledger-row .val.pos{color:var(--gold-bright);}
+  @keyframes rowIn{to{opacity:1; transform:translateY(0);}}
+  .ledger-net{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:16px; padding-top:16px; border-top:1px solid var(--line-dark);
+  }
+  .ledger-net .label{color:#fff; font-family:'IBM Plex Mono'; font-size:13px; font-weight:600;}
+  .ledger-net .val{color:var(--gold-bright); font-family:'IBM Plex Mono'; font-size:19px; font-weight:600;}
+  .stamp{
+    margin-top:18px; display:inline-flex; align-items:center; gap:8px;
+    border:1px solid rgba(30,142,90,.5); color:#6FDDA6; background:rgba(30,142,90,.1);
+    font-family:'IBM Plex Mono'; font-size:11.5px; font-weight:600; letter-spacing:.03em;
+    padding:6px 12px; border-radius:100px;
+    opacity:0; animation:stampIn .4s ease forwards; animation-delay:1.6s;
+  }
+  @keyframes stampIn{to{opacity:1;}}
 
-          <div class="feature-grid">
-            <article class="feature-card wide">
-              <div class="feature-icon shield"><span></span></div>
-              <div class="split">
-                <div>
-                  <h3>Role-Secured Access</h3>
-                  <p>
-                    Granular permission sets ensure sensitive payroll and
-                    employee data are visible only to authorized personnel.
-                  </p>
-                  <ul>
-                    <li>Custom role definitions</li>
-                    <li>2FA enforcement</li>
-                  </ul>
-                </div>
-                <div class="mini-dashboard access" aria-hidden="true">
-                  <div class="dash-sidebar"></div>
-                  <div class="dash-main">
-                    <span></span><span></span><span></span><span></span>
-                  </div>
-                  <div class="dash-lock">Secure</div>
-                </div>
-              </div>
-            </article>
+  @media (prefers-reduced-motion: reduce){
+    .ledger-row, .stamp{animation:none; opacity:1; transform:none;}
+  }
 
-            <article class="feature-card">
-              <div class="feature-icon flow"><span></span></div>
-              <h3>Request to Decision</h3>
-              <p>
-                Employee requests move through structured approvals with clear
-                ownership and time-stamped status changes.
-              </p>
-              <div class="approval-row" aria-hidden="true">
-                <span></span><span></span><span></span><strong>+2</strong>
-              </div>
-            </article>
+  /* Assessment banner */
+  .assess-banner{background:var(--ink); padding:56px 0; margin-top:20px;}
+  .assess-inner{
+    background:var(--ink-soft); border:1px solid var(--line-dark);
+    border-radius:18px; padding:44px 48px;
+    display:flex; justify-content:space-between; align-items:center; gap:32px;
+    flex-wrap:wrap;
+  }
+  .assess-inner h2{color:#fff; font-size:27px; max-width:480px;}
+  .assess-inner p{color:#B7BEC9; max-width:460px; margin-top:10px; font-size:15px;}
+  .assess-meta{
+    display:flex; gap:18px; margin-top:16px; font-family:'IBM Plex Mono'; font-size:11.5px; color:var(--slate-light);
+  }
+  .assess-meta span{display:flex; align-items:center; gap:6px;}
+  .assess-meta span::before{content:''; width:4px; height:4px; border-radius:50%; background:var(--gold-bright);}
 
-            <article class="feature-card gold-card">
-              <div class="feature-icon audit"><span></span></div>
-              <h3>Audit-Ready Controls</h3>
-              <p>
-                Instant access to audit trails lets you see exactly who made
-                each change and which records were reviewed.
-              </p>
-              <a href="mailto:sales@bexhr.com">Learn more -&gt;</a>
-            </article>
+  /* Features */
+  .features{padding:96px 0 88px;}
+  .section-head{text-align:center; max-width:640px; margin:0 auto 56px;}
+  .section-head .kicker{
+    font-family:'IBM Plex Mono'; font-size:12px; color:var(--gold); letter-spacing:.06em;
+    text-transform:uppercase; font-weight:600; margin-bottom:12px; display:block;
+  }
+  .section-head h2{font-size:34px;}
+  .section-head p{color:var(--slate); margin-top:12px; font-size:16px;}
 
-            <article class="feature-card wide">
-              <div class="split reverse">
-                <div class="mini-dashboard payroll" aria-hidden="true">
-                  <div></div><div></div><div></div>
-                </div>
-                <div>
-                  <h3>Automated Payroll Ops</h3>
-                  <p>
-                    Reduce payroll errors with deductions, pension support, tax
-                    calculations, run summaries, and approval-ready reports.
-                  </p>
-                  <div class="progress-box" aria-hidden="true">
-                    <div>
-                      <span>Monthly Run Progress</span>
-                      <strong>85% Complete</strong>
-                    </div>
-                    <i></i>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
+  .bento{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap:20px;
+  }
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .card .icon{
+    width:38px; height:38px; border-radius:9px;
+    background:var(--gold-pale); color:#7A5A17;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono'; font-weight:700; font-size:13px;
+    margin-bottom:6px;
+  }
+  .card h3{font-family:'IBM Plex Sans'; font-weight:700; font-size:17px;}
+  .card p{color:var(--slate); font-size:14.5px;}
+  .card.span-3{grid-column:span 3;}
+  .card.span-2{grid-column:span 2;}
+  .card.dark{background:var(--ink); border-color:var(--ink);}
+  .card.dark .icon{background:rgba(217,169,77,.14); color:var(--gold-bright);}
+  .card.dark h3{color:#fff;}
+  .card.dark p{color:#AEB5C1;}
+  .card-tag{
+    margin-top:auto; display:inline-flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono'; font-size:11px; color:var(--gold);
+    padding-top:10px;
+  }
+  .card.dark .card-tag{color:var(--gold-bright);}
 
-      <section class="stats">
-        <div class="container stats-grid">
-          <div><strong>99.9%</strong><span>accuracy focus</span></div>
-          <div><strong>2min</strong><span>tax readiness check</span></div>
-          <div><strong>500+</strong><span>employee records</span></div>
-          <div><strong>Zero</strong><span>avoidable payroll gaps</span></div>
-        </div>
-      </section>
+  @media (max-width:900px){
+    .bento{grid-template-columns:repeat(2,1fr);}
+    .card.span-3, .card.span-2{grid-column:span 2;}
+  }
 
-      <section class="final-cta" id="pricing">
-        <div class="container narrow">
-          <h2>Ready to upgrade your HR operational experience?</h2>
-          <p>
-            Join forward-thinking companies building their future on BexHR:
-            secure, compliant, and ready for whatever 2026 brings.
-          </p>
-          <div class="button-row center">
-            <a class="button button-dark" href="https://app.bexhr.com">Get Started Now</a>
-            <a class="button button-light" href="mailto:sales@bexhr.com">Contact Sales</a>
-          </div>
-        </div>
-      </section>
-    </main>
+  /* Stats */
+  .stats{border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:52px 0;}
+  .stats-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px; text-align:center;}
+  .stat .num{font-family:'IBM Plex Mono'; font-size:34px; font-weight:600; color:var(--ink);}
+  .stat .lbl{font-size:12px; color:var(--slate); letter-spacing:.04em; text-transform:uppercase; margin-top:6px;}
+  @media (max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr); row-gap:32px;}}
 
-    <footer class="site-footer">
-      <div class="container footer-grid">
-        <div>
-          <h2>BexHR</h2>
-          <p>
-            Audit-ready HR and payroll platform designed for modern enterprise
-            growth and compliance integrity.
-          </p>
-          <small>© 2026 BexHR. All rights reserved.</small>
-        </div>
-        <div>
-          <h3>Company</h3>
-          <a href="#pricing">Pricing</a>
-          <a href="mailto:sales@bexhr.com">Contact</a>
-        </div>
-        <div>
-          <h3>Support</h3>
-          <a href="mailto:support@bexhr.com">Compliance</a>
-          <a href="https://app.bexhr.com">Sign in</a>
+  /* Final CTA */
+  .final-cta{padding:104px 0; text-align:center; background:var(--paper-dim);}
+  .final-cta h2{font-size:34px; max-width:600px; margin:0 auto;}
+  .final-cta p{color:var(--slate); max-width:480px; margin:16px auto 32px; font-size:16px;}
+  .final-ctas{display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+
+  /* Footer */
+  footer{background:var(--ink); color:#B7BEC9; padding:56px 0 32px;}
+  .footer-top{display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap; padding-bottom:36px; border-bottom:1px solid var(--line-dark);}
+  .footer-brand .logo{color:#fff;}
+  .footer-brand p{max-width:280px; font-size:13.5px; margin-top:12px; color:#8A93A2;}
+  .footer-cols{display:flex; gap:64px; flex-wrap:wrap;}
+  .footer-col h4{font-family:'IBM Plex Mono'; font-size:11px; color:#6C7686; letter-spacing:.06em; text-transform:uppercase; margin-bottom:14px;}
+  .footer-col a{display:block; font-size:14px; margin-bottom:10px; color:#B7BEC9;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{padding-top:24px; font-size:12.5px; color:#6C7686;}
+
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:38px;}
+    .nav-links{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="logo"><span class="logo-mark">HR</span> bexHR</div>
+    <div class="nav-links">
+      <a href="#product" class="active">Product</a>
+      <a href="#features">Features</a>
+      <a href="assessment.html">2026 Assessment</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#demo" class="btn btn-gold">Book a Demo</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero" id="product">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Audit-Ready for 2026</span>
+      <h1>HR and payroll built like a <span class="accent">ledger</span>, not a spreadsheet.</h1>
+      <p class="lead">Manage people, salary, statutory deductions, and payslips in one role-secured system — with current Nigerian tax law calculated automatically, every run.</p>
+      <div class="hero-ctas">
+        <a href="#demo" class="btn btn-gold">Book a Demo</a>
+        <a href="assessment.html" class="btn btn-outline-ink">Take the 2026 Assessment →</a>
+      </div>
+    </div>
+
+    <div class="ledger-card">
+      <div class="ledger-top">
+        <div class="ledger-title">Payroll Run — GL-01 · Monthly</div>
+        <div class="ledger-badge">RULE-BASED</div>
+      </div>
+      <div class="ledger-row" style="animation-delay:.1s">
+        <span class="label">Monthly Gross Salary</span>
+        <span class="val">₦500,000.00</span>
+      </div>
+      <div class="ledger-row" style="animation-delay:.35s">
+        <span class="label">Rent Relief Allowance</span>
+        <span class="val pos">− ₦100,000.00</span>
+      </div>
+      <div class="ledger-row" style="animation-delay:.6s">
+        <span class="label">PAYE (2026 bands)</span>
+        <span class="val neg">− ₦38,500.00</span>
+      </div>
+      <div class="ledger-row" style="animation-delay:.85s">
+        <span class="label">Pension (Employee)</span>
+        <span class="val neg">− ₦40,000.00</span>
+      </div>
+      <div class="ledger-net">
+        <span class="label">Net Pay</span>
+        <span class="val">₦421,500.00</span>
+      </div>
+      <div class="stamp">✓ Reconciled &amp; payslip sent</div>
+    </div>
+  </div>
+</section>
+
+<section class="assess-banner">
+  <div class="wrap">
+    <div class="assess-inner">
+      <div>
+        <h2>Is your company ready for Nigeria's 2026 tax changes?</h2>
+        <p>New PAYE bands, Rent Relief Allowance, TIN/NIN requirements, vendor compliance — take the self-assessment and see exactly where the gaps are.</p>
+        <div class="assess-meta">
+          <span>15 questions</span>
+          <span>6 categories</span>
+          <span>~2 minutes</span>
         </div>
       </div>
-    </footer>
-  </body>
+      <a href="assessment.html" class="btn btn-gold">Start Assessment</a>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Engineered for precision</span>
+      <h2>Every payroll number, accounted for.</h2>
+      <p>The tools HR and finance teams need to run compliant payroll without reconciling a spreadsheet by hand.</p>
+    </div>
+
+    <div class="bento">
+      <div class="card span-3">
+        <div class="icon">P</div>
+        <h3>One employee record, used everywhere</h3>
+        <p>Bio data, contact details, role, and documents live in a single People record — the same one payroll draws from downstream, so nothing is re-keyed between HR and payroll.</p>
+        <span class="card-tag">→ People</span>
+      </div>
+
+      <div class="card span-3">
+        <div class="icon">S</div>
+        <h3>Salary and allowances, configured once</h3>
+        <p>Monthly gross salary, pay grade, pay cycle, and allowance components are set up per employee with effective dates — changes are tracked over time, not overwritten.</p>
+        <span class="card-tag">→ Payroll Setup</span>
+      </div>
+
+      <div class="card span-3 dark">
+        <div class="icon">D</div>
+        <h3>Statutory deductions, rule-based</h3>
+        <p>PAYE, withholding tax, and pension are configured as rule-based deductions applied automatically under current law. Your tax specialist can review and manage deductions per employee.</p>
+        <span class="card-tag">→ Deductions Setup</span>
+      </div>
+
+      <div class="card span-3">
+        <div class="icon">B</div>
+        <h3>Bank-linked payment export</h3>
+        <p>Employee bank accounts are captured against an approved bank directory, so payroll payment exports go out correctly the first time.</p>
+        <span class="card-tag">→ Employee Bank Details</span>
+      </div>
+
+      <div class="card span-2">
+        <div class="icon">✉</div>
+        <h3>Payslips, generated and emailed</h3>
+        <p>Once payroll runs, payslips are generated and sent by email automatically — with every deduction itemized clearly.</p>
+      </div>
+
+      <div class="card span-2">
+        <div class="icon">↑</div>
+        <h3>Bulk onboarding via CSV</h3>
+        <p>Import multiple employee profiles at once with the approved template, reviewed before saving.</p>
+      </div>
+
+      <div class="card span-2">
+        <div class="icon">🔒</div>
+        <h3>Role-secured access</h3>
+        <p>Sensitive payroll and employee data are only visible to authorized roles — access is scoped, not shared by default.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat">
+      <div class="num">6</div>
+      <div class="lbl">Onboarding steps, one record</div>
+    </div>
+    <div class="stat">
+      <div class="num">2026</div>
+      <div class="lbl">Tax bands built in</div>
+    </div>
+    <div class="stat">
+      <div class="num">100%</div>
+      <div class="lbl">Payslips auto-emailed</div>
+    </div>
+    <div class="stat">
+      <div class="num">0</div>
+      <div class="lbl">Spreadsheets required</div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" id="demo">
+  <div class="wrap">
+    <h2>Ready to close the books on manual payroll?</h2>
+    <p>Join HR and finance teams building their 2026 compliance on bexHR — secure, rule-based, and audit-ready.</p>
+    <div class="final-ctas">
+      <a href="#" class="btn btn-dark">Book a Demo</a>
+      <a href="assessment.html" class="btn btn-outline-ink">Take the Assessment</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-mark">HR</span> bexHR</div>
+        <p>Audit-ready HR &amp; payroll platform designed for modern enterprise growth and compliance integrity.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Pricing</a>
+          <a href="#">Contact Sales</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="assessment.html">2026 Tax Assessment</a>
+          <a href="#">Employer's Guide</a>
+          <a href="#">Compliance</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 bexHR. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
 </html>
